@@ -3,6 +3,8 @@ static float last_r = 0;
 
 const float LEFT_NORM = LEFT_ANCHOR_X * LEFT_ANCHOR_X + LEFT_ANCHOR_Y * LEFT_ANCHOR_Y;
 const float RIGHT_NORM = RIGHT_ANCHOR_X * RIGHT_ANCHOR_X + RIGHT_ANCHOR_Y * RIGHT_ANCHOR_Y;
+const float LEFT_TO_RIGHT = RIGHT_ANCHOR_X - LEFT_ANCHOR_X;
+
 
 /*
 This function is used as a one time setup for your machine.
@@ -146,8 +148,13 @@ void kinematics_post_homing() {
   Convert the N_AXIS array of motor positions to cartesian in your code.
 */
 void motors_to_cartesian(float* cartesian, float* motors, int n_axis) {
-    // position[X_AXIS] =
-    // position[Y_AXIS] =
+    float ml = motors[LEFT_AXIS];
+    float mr = motors[RIGHT_AXIS];
+    
+    float sl = LEFT_TO_RIGHT / 2  - (mr * mr + ml * ml) / (2 * LEFT_TO_RIGHT);
+
+    cartesian[X_AXIS] = LEFT_ANCHOR_X + sl;
+    cartesian[Y_AXIS] = LEFT_ANCHOR_Y - sqrt(ml * ml - sl * sl);
 }
 
 /*
