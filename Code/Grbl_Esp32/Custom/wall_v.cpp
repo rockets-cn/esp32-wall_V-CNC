@@ -1,6 +1,9 @@
 static float last_l  = 0;
 static float last_r = 0;
 
+const float LEFT_NORM = LEFT_ANCHOR_X * LEFT_ANCHOR_X + LEFT_ANCHOR_Y * LEFT_ANCHOR_Y;
+const float RIGHT_NORM = RIGHT_ANCHOR_X * RIGHT_ANCHOR_X + RIGHT_ANCHOR_Y * RIGHT_ANCHOR_Y;
+
 /*
 This function is used as a one time setup for your machine.
 */
@@ -48,25 +51,29 @@ bool user_defined_homing(uint8_t cycle_mask) {
     position = an N_AXIS array of where the machine is starting from for this move
 */
 bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* position) {
-    printf("cartesian_to_motors");
+    grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors");
 
     float    dx, dy, dz;          // distances in each cartesian axis
     float    p_dx, p_dy, p_dz;    // distances in each polar axis
-    float    dist, polar_dist;    // the distances in both systems...used to determine feed rate
     uint32_t segment_count;       // number of segments the move will be broken in to.
-    float    seg_target[N_AXIS];  // The target of the current segment
-    float    polar[N_AXIS];       // target location in polar coordinates
-    float    x_offset = gc_state.coord_system[X_AXIS] + gc_state.coord_offset[X_AXIS];  // offset from machine coordinate system
-    float    z_offset = gc_state.coord_system[Z_AXIS] + gc_state.coord_offset[Z_AXIS];  // offset from machine coordinate system
-    //grbl_sendf(CLIENT_SERIAL, "Position: %4.2f %4.2f %4.2f \r\n", position[X_AXIS] - x_offset, position[Y_AXIS], position[Z_AXIS]);
-    //grbl_sendf(CLIENT_SERIAL, "Target: %4.2f %4.2f %4.2f \r\n", target[X_AXIS] - x_offset, target[Y_AXIS], target[Z_AXIS]);
+    float    wall[N_AXIS];       // target location in polar coordinates
+
+    // offset from machine coordinate system
+    float    x_offset = gc_state.coord_system[X_AXIS] + gc_state.coord_offset[X_AXIS];  
+    float    y_offset = gc_state.coord_system[Y_AXIS] + gc_state.coord_offset[Y_AXIS];  
+    float    z_offset = gc_state.coord_system[Z_AXIS] + gc_state.coord_offset[Z_AXIS];  
+
+    grbl_sendf(CLIENT_SERIAL, "Position: %4.2f %4.2f %4.2f \r\n", position[X_AXIS], position[Y_AXIS], position[Z_AXIS]);
+    grbl_sendf(CLIENT_SERIAL, "Target: %4.2f %4.2f %4.2f \r\n", target[X_AXIS], target[Y_AXIS], target[Z_AXIS]);
+    
     // calculate cartesian move distance for each axis
     dx = target[X_AXIS] - position[X_AXIS];
     dy = target[Y_AXIS] - position[Y_AXIS];
     dz = target[Z_AXIS] - position[Z_AXIS];
+
     // calculate the total X,Y axis move distance
     // Z axis is the same in both coord systems, so it is ignored
-    dist = sqrt((dx * dx) + (dy * dy) + (dz * dz));
+    float dist = sqrt((dx * dx) + (dy * dy) + (dz * dz));
     if (pl_data->motion.rapidMotion) {
         segment_count = 1;  // rapid G0 motion is not used to draw, so skip the segmentation
     } else {
@@ -75,9 +82,43 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
     
     dist /= segment_count;  // segment distance
     for (uint32_t segment = 1; segment <= segment_count; segment++) {
-    }
+        // determine this segment's target
+        float seg_x = position[X_AXIS] + (dx / float(segment_count) * segment) - x_offset;
+        float seg_y = position[Y_AXIS] + (dy / float(segment_count) * segment) - y_offset;
+        float seg_z = position[Z_AXIS] + (dz / float(segment_count) * segment) - z_offset;
 
-    return mc_line(target, pl_data);
+        float seg_r = seg_x * seg_x + seg_y * seg_y;
+
+        wall[LEFT_AXIS] = sqrt(seg_r + LEFT_NORM - 2 * LEFT_ANCHOR_X * seg_x - 2 * LEFT_ANCHOR_Y * seg_y);
+        wall[RIGHT_AXIS] = sqrt(seg_r + RIGHT_NORM - 2 * RIGHT_ANCHOR_X * seg_x - 2 * RIGHT_ANCHOR_Y * seg_y);
+        grbl_sendf(CLIENT_SERIAL, "Wall Axis: %4.2f %4.2f\r\n", wall[LEFT_AXIS], wall[RIGHT_AXIS]);
+
+        // begin determining new feed rate
+        // calculate move distance for each axis
+        p_dx                      = wall[LEFT_AXIS] - last_l;
+        p_dy                      = wall[RIGHT_AXIS] - last_r;
+        p_dz                      = dz;
+
+        float wall_rate_multiply = 1.0;                                                  // fail safe rate
+        pl_data->feed_rate *= wall_rate_multiply;  // apply the distance ratio between coord systems
+
+        // end determining new feed rate
+        // wall[LEFT_AXIS] += x_offset;
+        // wall[RIGHT_AXIS] += y_offset;
+        wall[Z_AXIS] += z_offset;
+
+        // mc_line() returns false if a jog is cancelled.
+        // In that case we stop sending segments to the planner.
+        if (!mc_line(wall, pl_data)) {
+            return false;
+        }
+
+        //
+        last_l = wall[LEFT_AXIS];
+        last_r  = wall[RIGHT_AXIS];
+    }
+    // TO DO don't need a feedrate for rapids
+    return true;
 }
 
 /*
@@ -93,7 +134,10 @@ bool kinematics_pre_homing(uint8_t cycle_mask) {
 /*
   kinematics_post_homing() is called at the end of normal homing
 */
-void kinematics_post_homing() {}
+void kinematics_post_homing() {
+    last_l = 0;
+    last_r = 0;
+}
 
 /*
   The status command uses motors_to_cartesian() to convert
