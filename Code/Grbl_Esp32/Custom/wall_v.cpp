@@ -93,6 +93,7 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
 
         wall[LEFT_AXIS] = sqrt(seg_r + LEFT_NORM - 2 * LEFT_ANCHOR_X * seg_x - 2 * LEFT_ANCHOR_Y * seg_y);
         wall[RIGHT_AXIS] = sqrt(seg_r + RIGHT_NORM - 2 * RIGHT_ANCHOR_X * seg_x - 2 * RIGHT_ANCHOR_Y * seg_y);
+        wall[Z_AXIS] = seg_z;
         grbl_sendf(CLIENT_SERIAL, "Wall Axis: %4.2f %4.2f\r\n", wall[LEFT_AXIS], wall[RIGHT_AXIS]);
 
         // begin determining new feed rate
@@ -101,7 +102,19 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
         p_dy                      = wall[RIGHT_AXIS] - last_r;
         p_dz                      = dz;
 
-        float wall_rate_multiply = 1.0;                                                  // fail safe rate
+        // feed_rate
+        float wall_rate_multiply = 1.0;     
+            if ((p_dx == 0 && p_dy == 0) || dist == 0) {
+            // prevent 0 feed rate and division by 0
+            wall_rate_multiply = 1.0;  // default to same feed rate
+        } else {
+            // calc a feed rate multiplier
+            wall_rate_multiply = (p_dx + p_dy) / (2 * dist);
+            if (wall_rate_multiply < 0.5) {
+                // prevent much slower speed
+                wall_rate_multiply = 0.5;
+            }
+        }
         pl_data->feed_rate *= wall_rate_multiply;  // apply the distance ratio between coord systems
 
         // end determining new feed rate
