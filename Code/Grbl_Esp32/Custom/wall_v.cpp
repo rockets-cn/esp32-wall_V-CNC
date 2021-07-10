@@ -85,9 +85,13 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
     dist /= segment_count;  // segment distance
     for (uint32_t segment = 1; segment <= segment_count; segment++) {
         // determine this segment's target
-        float seg_x = position[X_AXIS] + (dx / float(segment_count) * segment) - x_offset;
-        float seg_y = position[Y_AXIS] + (dy / float(segment_count) * segment) - y_offset;
-        float seg_z = position[Z_AXIS] + (dz / float(segment_count) * segment) - z_offset;
+        float seg_x = position[X_AXIS] + (dx / float(segment_count) * segment);
+        float seg_y = position[Y_AXIS] + (dy / float(segment_count) * segment);
+        float seg_z = position[Z_AXIS] + (dz / float(segment_count) * segment);
+
+        // seg_x -= x_offset;
+        // seg_y -= y_offset;
+        seg_z -= z_offset;
 
         float seg_r = seg_x * seg_x + seg_y * seg_y;
 
@@ -98,9 +102,9 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
 
         // begin determining new feed rate
         // calculate move distance for each axis
-        p_dx                      = wall[LEFT_AXIS] - last_l;
-        p_dy                      = wall[RIGHT_AXIS] - last_r;
-        p_dz                      = dz;
+        p_dx = wall[LEFT_AXIS] - last_l;
+        p_dy = wall[RIGHT_AXIS] - last_r;
+        p_dz = dz;
 
         // feed_rate
         float wall_rate_multiply = 1.0;     
