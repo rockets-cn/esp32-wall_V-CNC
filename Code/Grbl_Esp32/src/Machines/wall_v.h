@@ -92,18 +92,18 @@
 #define DEFAULT_LASER_MODE 0 // false
 
 #define DEFAULT_X_STEPS_PER_MM 200.0
-#define DEFAULT_Y_STEPS_PER_MM 71.111
-#define DEFAULT_Z_STEPS_PER_MM 100.0 // This is percent in servo mode
+#define DEFAULT_Y_STEPS_PER_MM 200.0
+#define DEFAULT_Z_STEPS_PER_MM 200.0 // This is percent in servo mode
 
 #define DEFAULT_X_MAX_RATE 5000.0 // mm/min
-#define DEFAULT_Y_MAX_RATE 15000.0 // mm/min
+#define DEFAULT_Y_MAX_RATE 5000.0 // mm/min
 #define DEFAULT_Z_MAX_RATE 3000.0 // mm/min
 
 #define DEFAULT_X_ACCELERATION 200.0 // mm/sec^2. 200 mm/sec^2 = 720000 mm/min^2
 #define DEFAULT_Y_ACCELERATION 200.0 // mm/sec^2
 #define DEFAULT_Z_ACCELERATION 50.0 // mm/sec^2
 
-#define DEFAULT_X_MAX_TRAVEL 50.0 // mm NOTE: Must be a positive value.
+#define DEFAULT_X_MAX_TRAVEL 300.0 // mm NOTE: Must be a positive value.
 #define DEFAULT_Y_MAX_TRAVEL 300.0 // mm NOTE: Must be a positive value.
 #define DEFAULT_Z_MAX_TRAVEL 5.0 // This is percent in servo mode
 
