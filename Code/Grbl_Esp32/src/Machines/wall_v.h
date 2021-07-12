@@ -20,16 +20,22 @@
 
 #define SEGMENT_LENGTH 1 // in mm
 
-#define X_STEP_PIN              GPIO_NUM_15
-#define Y_STEP_PIN              GPIO_NUM_2
-#define X_DIRECTION_PIN         GPIO_NUM_25
-#define Y_DIRECTION_PIN         GPIO_NUM_26
+#define X_STEP_PIN              GPIO_NUM_25
+#define Y_STEP_PIN              GPIO_NUM_26
+#define X_DIRECTION_PIN         GPIO_NUM_14
+#define Y_DIRECTION_PIN         GPIO_NUM_13
+#define Z_STEP_PIN              GPIO_NUM_16
+#define Z_DIRECTION_PIN         GPIO_NUM_4
+
 
 #define STEPPERS_DISABLE_PIN    GPIO_NUM_17
 
-#define Z_SERVO_PIN             GPIO_NUM_16
+// #define Z_SERVO_PIN             GPIO_NUM_16
 
-#define X_LIMIT_PIN             GPIO_NUM_4
+#define X_LIMIT_PIN             GPIO_NUM_36
+#define Y_LIMIT_PIN             GPIO_NUM_39
+#define Z_LIMIT_PIN             GPIO_NUM_34
+
 
 #define SPINDLE_TYPE SpindleType::NONE
 
@@ -46,10 +52,11 @@
     #undef INVERT_CONTROL_PIN_MASK
 #endif
 #define INVERT_CONTROL_PIN_MASK B11111111
-
+/*
 #define MACRO_BUTTON_0_PIN      GPIO_NUM_13
 #define MACRO_BUTTON_1_PIN      GPIO_NUM_12
 #define MACRO_BUTTON_2_PIN      GPIO_NUM_14
+*/
 
 // ============= End CPU MAP ==================
 
