@@ -4,6 +4,8 @@ static float last_r = 0;
 const float LEFT_NORM = LEFT_ANCHOR_X * LEFT_ANCHOR_X + LEFT_ANCHOR_Y * LEFT_ANCHOR_Y;
 const float RIGHT_NORM = RIGHT_ANCHOR_X * RIGHT_ANCHOR_X + RIGHT_ANCHOR_Y * RIGHT_ANCHOR_Y;
 const float LEFT_TO_RIGHT = RIGHT_ANCHOR_X - LEFT_ANCHOR_X;
+const float ZERO_LEFT = sqrt(LEFT_NORM);
+const float ZERO_RIGHT = sqrt(RIGHT_NORM);
 
 
 /*
@@ -95,8 +97,8 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
 
         float seg_r = seg_x * seg_x + seg_y * seg_y;
 
-        wall[LEFT_AXIS] = sqrt(seg_r + LEFT_NORM - 2 * LEFT_ANCHOR_X * seg_x - 2 * LEFT_ANCHOR_Y * seg_y);
-        wall[RIGHT_AXIS] = sqrt(seg_r + RIGHT_NORM - 2 * RIGHT_ANCHOR_X * seg_x - 2 * RIGHT_ANCHOR_Y * seg_y);
+        wall[LEFT_AXIS] = sqrt(seg_r + LEFT_NORM - 2 * LEFT_ANCHOR_X * seg_x - 2 * LEFT_ANCHOR_Y * seg_y) - ZERO_LEFT;
+        wall[RIGHT_AXIS] = sqrt(seg_r + RIGHT_NORM - 2 * RIGHT_ANCHOR_X * seg_x - 2 * RIGHT_ANCHOR_Y * seg_y) - ZERO_RIGHT;
         wall[Z_AXIS] = seg_z;
         grbl_sendf(CLIENT_SERIAL, "Wall Axis: (%4.2f %4.2f)\r\n", wall[LEFT_AXIS], wall[RIGHT_AXIS]);
 
@@ -167,10 +169,10 @@ void kinematics_post_homing() {
   Convert the N_AXIS array of motor positions to cartesian in your code.
 */
 void motors_to_cartesian(float* cartesian, float* motors, int n_axis) {
-    float ml = motors[LEFT_AXIS];
-    float mr = motors[RIGHT_AXIS];
+    float ml = motors[LEFT_AXIS] + ZERO_LEFT;
+    float mr = motors[RIGHT_AXIS] + ZERO_RIGHT;
 
-    grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors: (%4.2f, %4.2f)\r\n", ml, mr);
+    grbl_sendf(CLIENT_SERIAL, "motors_to_cartesian: (%4.2f, %4.2f)\r\n", ml, mr);
 
 
     float sl = LEFT_TO_RIGHT / 2  - (mr * mr + ml * ml) / (2 * LEFT_TO_RIGHT);
