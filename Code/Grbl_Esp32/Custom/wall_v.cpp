@@ -53,7 +53,7 @@ bool user_defined_homing(uint8_t cycle_mask) {
     position = an N_AXIS array of where the machine is starting from for this move
 */
 bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* position) {
-    grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors");
+    grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors\r\n");
 
     float    dx, dy, dz;          // distances in each cartesian axis
     float    p_dx, p_dy, p_dz;    // distances in each polar axis
@@ -65,8 +65,8 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
     float    y_offset = gc_state.coord_system[Y_AXIS] + gc_state.coord_offset[Y_AXIS];  
     float    z_offset = gc_state.coord_system[Z_AXIS] + gc_state.coord_offset[Z_AXIS];  
 
-    grbl_sendf(CLIENT_SERIAL, "Position: %4.2f %4.2f %4.2f \r\n", position[X_AXIS], position[Y_AXIS], position[Z_AXIS]);
-    grbl_sendf(CLIENT_SERIAL, "Target: %4.2f %4.2f %4.2f \r\n", target[X_AXIS], target[Y_AXIS], target[Z_AXIS]);
+    grbl_sendf(CLIENT_SERIAL, "Position: (%4.2f %4.2f %4.2f) \r\n", position[X_AXIS], position[Y_AXIS], position[Z_AXIS]);
+    grbl_sendf(CLIENT_SERIAL, "Target: (%4.2f %4.2f %4.2f) \r\n", target[X_AXIS], target[Y_AXIS], target[Z_AXIS]);
     
     // calculate cartesian move distance for each axis
     dx = target[X_AXIS] - position[X_AXIS];
@@ -98,7 +98,7 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
         wall[LEFT_AXIS] = sqrt(seg_r + LEFT_NORM - 2 * LEFT_ANCHOR_X * seg_x - 2 * LEFT_ANCHOR_Y * seg_y);
         wall[RIGHT_AXIS] = sqrt(seg_r + RIGHT_NORM - 2 * RIGHT_ANCHOR_X * seg_x - 2 * RIGHT_ANCHOR_Y * seg_y);
         wall[Z_AXIS] = seg_z;
-        grbl_sendf(CLIENT_SERIAL, "Wall Axis: %4.2f %4.2f\r\n", wall[LEFT_AXIS], wall[RIGHT_AXIS]);
+        grbl_sendf(CLIENT_SERIAL, "Wall Axis: (%4.2f %4.2f)\r\n", wall[LEFT_AXIS], wall[RIGHT_AXIS]);
 
         // begin determining new feed rate
         // calculate move distance for each axis
@@ -154,6 +154,8 @@ bool kinematics_pre_homing(uint8_t cycle_mask) {
   kinematics_post_homing() is called at the end of normal homing
 */
 void kinematics_post_homing() {
+    grbl_sendf(CLIENT_SERIAL, "kinematics_post_homing\r\n");
+
     last_l = 0;
     last_r = 0;
 }
@@ -167,11 +169,16 @@ void kinematics_post_homing() {
 void motors_to_cartesian(float* cartesian, float* motors, int n_axis) {
     float ml = motors[LEFT_AXIS];
     float mr = motors[RIGHT_AXIS];
-    
+
+    grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors: (%4.2f, %4.2f)\r\n", ml, mr);
+
+
     float sl = LEFT_TO_RIGHT / 2  - (mr * mr + ml * ml) / (2 * LEFT_TO_RIGHT);
 
     cartesian[X_AXIS] = LEFT_ANCHOR_X + sl;
     cartesian[Y_AXIS] = LEFT_ANCHOR_Y - sqrt(ml * ml - sl * sl);
+
+    grbl_sendf(CLIENT_SERIAL, "cartesian: (%4.2f, %4.2f)\r\n", cartesian[X_AXIS], cartesian[Y_AXIS]);
 }
 
 /*

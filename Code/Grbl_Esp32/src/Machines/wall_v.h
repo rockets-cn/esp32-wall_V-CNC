@@ -22,9 +22,9 @@
 
 #define X_STEP_PIN              GPIO_NUM_25
 #define Y_STEP_PIN              GPIO_NUM_26
+#define Z_STEP_PIN              GPIO_NUM_16
 #define X_DIRECTION_PIN         GPIO_NUM_14
 #define Y_DIRECTION_PIN         GPIO_NUM_13
-#define Z_STEP_PIN              GPIO_NUM_16
 #define Z_DIRECTION_PIN         GPIO_NUM_4
 
 
