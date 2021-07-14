@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-07-10 11:11:35
+ * @LastEditTime: 2021-07-14 14:25:17
+ * @LastEditors: Please set LastEditors
+ * @Description: In User Settings Edit
+ * @FilePath: \esp32-wall_V-CNCc:\Users\rocke\Documents\GitHub\esp32-wall_V-CNC\Code\Grbl_Esp32\src\Machine.h
+ */
 #pragma once
 
 // This file is where you choose the machine type, by including
@@ -9,7 +17,7 @@
 // all I/O pins
 // #include "Machines/atari_1020.h"
 #include "Machines/wall_v.h"
-
+//#include "Machines/3axis_gimbal.h"
 // !!! For actual use, change the line above to select a board
 // from Machines/, for example:
 // #include "Machines/3axis_v4.h"

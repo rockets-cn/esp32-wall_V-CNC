@@ -13,8 +13,8 @@
 #define RIGHT_AXIS 1
 
 // 左右固定点坐标 
-#define LEFT_ANCHOR_X -500
-#define RIGHT_ANCHOR_X 500
+#define LEFT_ANCHOR_X -400
+#define RIGHT_ANCHOR_X 400
 #define LEFT_ANCHOR_Y 300
 #define RIGHT_ANCHOR_Y 300
 
