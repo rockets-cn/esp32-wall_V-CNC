@@ -18,13 +18,13 @@
 #define LEFT_ANCHOR_Y 300
 #define RIGHT_ANCHOR_Y 300
 
-#define SEGMENT_LENGTH 1 // in mm
+#define SEGMENT_LENGTH 10 // in mm
 
 #define X_STEP_PIN              GPIO_NUM_25
-#define Y_STEP_PIN              GPIO_NUM_26
-#define Z_STEP_PIN              GPIO_NUM_16
-#define X_DIRECTION_PIN         GPIO_NUM_14
+#define X_DIRECTION_PIN         GPIO_NUM_26
+#define Y_STEP_PIN              GPIO_NUM_14
 #define Y_DIRECTION_PIN         GPIO_NUM_13
+#define Z_STEP_PIN              GPIO_NUM_16
 #define Z_DIRECTION_PIN         GPIO_NUM_4
 
 
@@ -32,9 +32,9 @@
 
 // #define Z_SERVO_PIN             GPIO_NUM_16
 
-#define X_LIMIT_PIN             GPIO_NUM_36
-#define Y_LIMIT_PIN             GPIO_NUM_39
-#define Z_LIMIT_PIN             GPIO_NUM_34
+//#define X_LIMIT_PIN             GPIO_NUM_36
+//#define Y_LIMIT_PIN             GPIO_NUM_39
+//#define Z_LIMIT_PIN             GPIO_NUM_34
 
 
 #define SPINDLE_TYPE SpindleType::NONE
@@ -91,8 +91,8 @@
 
 #define DEFAULT_LASER_MODE 0 // false
 
-#define DEFAULT_X_STEPS_PER_MM 200.0
-#define DEFAULT_Y_STEPS_PER_MM 200.0
+#define DEFAULT_X_STEPS_PER_MM 200 * 4 * 49 / (8 * 3.14)
+#define DEFAULT_Y_STEPS_PER_MM 200 * 4 * 49 / (8 * 3.14)
 #define DEFAULT_Z_STEPS_PER_MM 200.0 // This is percent in servo mode
 
 #define DEFAULT_X_MAX_RATE 5000.0 // mm/min
@@ -103,8 +103,8 @@
 #define DEFAULT_Y_ACCELERATION 200.0 // mm/sec^2
 #define DEFAULT_Z_ACCELERATION 50.0 // mm/sec^2
 
-#define DEFAULT_X_MAX_TRAVEL 300.0 // mm NOTE: Must be a positive value.
-#define DEFAULT_Y_MAX_TRAVEL 300.0 // mm NOTE: Must be a positive value.
+#define DEFAULT_X_MAX_TRAVEL 900.0 // mm NOTE: Must be a positive value.
+#define DEFAULT_Y_MAX_TRAVEL 900.0 // mm NOTE: Must be a positive value.
 #define DEFAULT_Z_MAX_TRAVEL 5.0 // This is percent in servo mode
 
 #define DEFAULT_Z_HOMING_MPOS DEFAULT_Z_MAX_TRAVEL // stays up after homing
