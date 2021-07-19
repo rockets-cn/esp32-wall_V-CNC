@@ -9,6 +9,6 @@
 固件采用ESP_GRBL
 电机改为步进电机加减速箱
 ## 感谢
-感谢蘑菇云创客空间的@light（solasolo）https://github.com/solasolo 和 @撒哈拉大野牛 @999 @孙浩钦
-感谢@malson CNC项目
+感谢蘑菇云创客空间的@light（solasolo）https://github.com/solasolo 和 @撒哈拉大野牛 @999 @孙浩钦(sunhaoqin) https://github.com/sunhaoqin
+感谢@maslow CNC项目https://www.maslowcnc.com/
 感谢@ESP_GRBL项目
