@@ -13,10 +13,10 @@
 #define RIGHT_AXIS 1
 
 // 左右固定点坐标 
-#define LEFT_ANCHOR_X -400
-#define RIGHT_ANCHOR_X 400
-#define LEFT_ANCHOR_Y 300
-#define RIGHT_ANCHOR_Y 300
+#define LEFT_ANCHOR_X -1505
+#define RIGHT_ANCHOR_X 1505
+#define LEFT_ANCHOR_Y 1100
+#define RIGHT_ANCHOR_Y 1100
 
 #define SEGMENT_LENGTH 10 // in mm
 
@@ -91,8 +91,8 @@
 
 #define DEFAULT_LASER_MODE 0 // false
 
-#define DEFAULT_X_STEPS_PER_MM 200 * 4 * 49 / (8 * 3.14)
-#define DEFAULT_Y_STEPS_PER_MM 200 * 4 * 49 / (8 * 3.14)
+#define DEFAULT_X_STEPS_PER_MM 200 * 4 * 49 / (20.2 * 3.14)
+#define DEFAULT_Y_STEPS_PER_MM 200 * 4 * 49 / (20.2 * 3.14)
 #define DEFAULT_Z_STEPS_PER_MM 200.0 // This is percent in servo mode
 
 #define DEFAULT_X_MAX_RATE 5000.0 // mm/min

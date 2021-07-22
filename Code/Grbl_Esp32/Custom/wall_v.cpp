@@ -12,14 +12,14 @@ const float ZERO_RIGHT = sqrt(RIGHT_NORM);
 This function is used as a one time setup for your machine.
 */
 void machine_init() {
-      grbl_sendf(CLIENT_SERIAL, "machine_init\r\n");
+     // grbl_sendf(CLIENT_SERIAL, "machine_init\r\n");
 }
 
 /*
 This is used to initialize a display.
 */
 void display_init() {
-      grbl_sendf(CLIENT_SERIAL, "display_init\r\n");
+     // grbl_sendf(CLIENT_SERIAL, "display_init\r\n");
 }
 
 /*
@@ -27,7 +27,7 @@ void display_init() {
   It returns true if the motion is outside the limit values
 */
 bool limitsCheckTravel() {
-    grbl_sendf(CLIENT_SERIAL, "limitsCheckTravel\r\n");
+   // grbl_sendf(CLIENT_SERIAL, "limitsCheckTravel\r\n");
     return false;
 }
 
@@ -40,7 +40,7 @@ bool limitsCheckTravel() {
 */
 bool user_defined_homing(uint8_t cycle_mask) {
     // True = done with homing, false = continue with normal Grbl_ESP32 homing
-    grbl_sendf(CLIENT_SERIAL, "user_defined_homing\r\n");
+    //grbl_sendf(CLIENT_SERIAL, "user_defined_homing\r\n");
     return true;
 }
 
@@ -61,7 +61,7 @@ bool user_defined_homing(uint8_t cycle_mask) {
     position = an N_AXIS array of where the machine is starting from for this move
 */
 bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* position) {
-    grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors start\r\n");
+   //grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors start\r\n");
 
     float    dx, dy, dz;          // distances in each cartesian axis
     float    p_dx, p_dy, p_dz;    // distances in each polar axis
@@ -73,7 +73,7 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
     float    y_offset = gc_state.coord_system[Y_AXIS] + gc_state.coord_offset[Y_AXIS];  
     float    z_offset = gc_state.coord_system[Z_AXIS] + gc_state.coord_offset[Z_AXIS];  
 
-    grbl_sendf(CLIENT_SERIAL, "Position: (%4.2f, %4.2f) Target: (%4.2f, %4.2f) Offset: (%4.2f, %4.2f)\r\n", position[X_AXIS], position[Y_AXIS], target[X_AXIS], target[Y_AXIS], x_offset, y_offset);
+    //grbl_sendf(CLIENT_SERIAL, "Position: (%4.2f, %4.2f) Target: (%4.2f, %4.2f) Offset: (%4.2f, %4.2f)\r\n", position[X_AXIS], position[Y_AXIS], target[X_AXIS], target[Y_AXIS], x_offset, y_offset);
     
     // calculate cartesian move distance for each axis
     dx = target[X_AXIS] - position[X_AXIS];
@@ -105,7 +105,7 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
         wall[LEFT_AXIS] = sqrt(seg_r + LEFT_NORM - 2 * LEFT_ANCHOR_X * seg_x - 2 * LEFT_ANCHOR_Y * seg_y) - ZERO_LEFT;
         wall[RIGHT_AXIS] = sqrt(seg_r + RIGHT_NORM - 2 * RIGHT_ANCHOR_X * seg_x - 2 * RIGHT_ANCHOR_Y * seg_y) - ZERO_RIGHT;
         wall[Z_AXIS] = seg_z;
-        grbl_sendf(CLIENT_SERIAL, "Wall Axis: %d/%d (%4.2f %4.2f)\r\n", segment, segment_count, wall[LEFT_AXIS], wall[RIGHT_AXIS]);
+        //grbl_sendf(CLIENT_SERIAL, "Wall Axis: %d/%d (%4.2f %4.2f)\r\n", segment, segment_count, wall[LEFT_AXIS], wall[RIGHT_AXIS]);
 
         // begin determining new feed rate
         // calculate move distance for each axis
@@ -137,7 +137,7 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
         // mc_line() returns false if a jog is cancelled.
         // In that case we stop sending segments to the planner.
         if (!mc_line(wall, pl_data)) {
-          grbl_sendf(CLIENT_SERIAL, "mc_line error\r\n");    
+          //grbl_sendf(CLIENT_SERIAL, "mc_line error\r\n");    
             return false;
         }
 
@@ -146,7 +146,7 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
         last_r  = wall[RIGHT_AXIS];
     }
 
-    grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors end\r\n");
+    //grbl_sendf(CLIENT_SERIAL, "cartesian_to_motors end\r\n");
 
     // TO DO don't need a feedrate for rapids
     return true;
@@ -166,7 +166,7 @@ bool kinematics_pre_homing(uint8_t cycle_mask) {
   kinematics_post_homing() is called at the end of normal homing
 */
 void kinematics_post_homing() {
-    grbl_sendf(CLIENT_SERIAL, "kinematics_post_homing\r\n");
+    //grbl_sendf(CLIENT_SERIAL, "kinematics_post_homing\r\n");
 
     last_l = 0;
     last_r = 0;
@@ -182,7 +182,7 @@ void motors_to_cartesian(float* cartesian, float* motors, int n_axis) {
     float ml = motors[LEFT_AXIS] + ZERO_LEFT;
     float mr = motors[RIGHT_AXIS] + ZERO_RIGHT;
 
-    grbl_sendf(CLIENT_SERIAL, "motors_to_cartesian: (%4.2f, %4.2f)\r\n", motors[LEFT_AXIS],  motors[RIGHT_AXIS]);
+    //grbl_sendf(CLIENT_SERIAL, "motors_to_cartesian: (%4.2f, %4.2f)\r\n", motors[LEFT_AXIS],  motors[RIGHT_AXIS]);
 
 
     float sl = LEFT_TO_RIGHT / 2  + (ml * ml - mr * mr) / (2 * LEFT_TO_RIGHT);
@@ -193,7 +193,7 @@ void motors_to_cartesian(float* cartesian, float* motors, int n_axis) {
     cartesian[X_AXIS] = LEFT_ANCHOR_X + sl + x_offset;
     cartesian[Y_AXIS] = LEFT_ANCHOR_Y - sqrt(ml * ml - sl * sl) + y_offset;
 
-    grbl_sendf(CLIENT_SERIAL, "cartesian: (%4.2f, %4.2f)\r\n", cartesian[X_AXIS], cartesian[Y_AXIS]);
+    //grbl_sendf(CLIENT_SERIAL, "cartesian: (%4.2f, %4.2f)\r\n", cartesian[X_AXIS], cartesian[Y_AXIS]);
 }
 
 /*
@@ -201,7 +201,7 @@ void motors_to_cartesian(float* cartesian, float* motors, int n_axis) {
   to perform appropriate actions for your machine.
 */
 void user_tool_change(uint8_t new_tool) {
-      grbl_sendf(CLIENT_SERIAL, "user_tool_change\r\n");
+      //grbl_sendf(CLIENT_SERIAL, "user_tool_change\r\n");
 
 }
 
@@ -210,7 +210,7 @@ void user_tool_change(uint8_t new_tool) {
   perform whatever actions you choose.
 */
 void user_defined_macro(uint8_t index) {
-      grbl_sendf(CLIENT_SERIAL, "user_defined_macro\r\n");
+      //grbl_sendf(CLIENT_SERIAL, "user_defined_macro\r\n");
 
 }
 
@@ -218,7 +218,7 @@ void user_defined_macro(uint8_t index) {
   user_m30() is called when an M30 gcode signals the end of a gcode file.
 */
 void user_m30() {
-      grbl_sendf(CLIENT_SERIAL, "user_m30\r\n");
+      //grbl_sendf(CLIENT_SERIAL, "user_m30\r\n");
 
 }
 
