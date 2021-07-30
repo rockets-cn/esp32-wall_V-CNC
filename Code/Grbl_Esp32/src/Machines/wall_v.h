@@ -20,21 +20,21 @@
 
 #define SEGMENT_LENGTH 10 // in mm
 
-#define X_STEP_PIN              GPIO_NUM_25
-#define X_DIRECTION_PIN         GPIO_NUM_26
-#define Y_STEP_PIN              GPIO_NUM_14
-#define Y_DIRECTION_PIN         GPIO_NUM_13
-#define Z_STEP_PIN              GPIO_NUM_16
-#define Z_DIRECTION_PIN         GPIO_NUM_4
+#define X_STEP_PIN              GPIO_NUM_25 //D2
+#define X_DIRECTION_PIN         GPIO_NUM_26 //D3
+#define Y_STEP_PIN              GPIO_NUM_14 //D6
+#define Y_DIRECTION_PIN         GPIO_NUM_13 //D7
+#define Z_STEP_PIN              GPIO_NUM_16 //D11
+#define Z_DIRECTION_PIN         GPIO_NUM_4 //D12
 
 
 #define STEPPERS_DISABLE_PIN    GPIO_NUM_17
 
 // #define Z_SERVO_PIN             GPIO_NUM_16
 
-//#define X_LIMIT_PIN             GPIO_NUM_36
-//#define Y_LIMIT_PIN             GPIO_NUM_39
-//#define Z_LIMIT_PIN             GPIO_NUM_34
+//#define X_LIMIT_PIN             GPIO_NUM_36 //A0
+//#define Y_LIMIT_PIN             GPIO_NUM_39 //A1
+//#define Z_LIMIT_PIN             GPIO_NUM_34 //A2
 
 
 #define SPINDLE_TYPE SpindleType::NONE
