@@ -73,7 +73,7 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
     float    y_offset = gc_state.coord_system[Y_AXIS] + gc_state.coord_offset[Y_AXIS];  
     float    z_offset = gc_state.coord_system[Z_AXIS] + gc_state.coord_offset[Z_AXIS];  
 
-    //grbl_sendf(CLIENT_SERIAL, "Position: (%4.2f, %4.2f) Target: (%4.2f, %4.2f) Offset: (%4.2f, %4.2f)\r\n", position[X_AXIS], position[Y_AXIS], target[X_AXIS], target[Y_AXIS], x_offset, y_offset);
+    grbl_sendf(CLIENT_SERIAL, "Position: (%4.2f, %4.2f, %4.2f) Target: (%4.2f, %4.2f, %4.2f) Offset: (%4.2f, %4.2f)\r\n", position[X_AXIS], position[Y_AXIS], position[Z_AXIS], target[X_AXIS], target[Y_AXIS], target[Z_AXIS], x_offset, y_offset);
     
     // calculate cartesian move distance for each axis
     dx = target[X_AXIS] - position[X_AXIS];
@@ -88,7 +88,20 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
     } else {
         segment_count = ceil(dist / SEGMENT_LENGTH);  // determine the number of segments we need	... round up so there is at least 1
     }
-    
+
+    if(segment_count == 0 &&  target[Z_AXIS] != position[Z_AXIS])
+    {
+
+        wall[LEFT_AXIS] = last_l;
+        wall[RIGHT_AXIS] = last_r;
+        wall[Z_AXIS] = target[Z_AXIS];
+
+        if (!mc_line(wall, pl_data)) {
+          //grbl_sendf(CLIENT_SERIAL, "mc_line error\r\n");    
+            return false;
+        }
+    }
+
     dist /= segment_count;  // segment distance
     for (uint32_t segment = 1; segment <= segment_count; segment++) {
         // determine this segment's target
@@ -104,8 +117,8 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
 
         wall[LEFT_AXIS] = sqrt(seg_r + LEFT_NORM - 2 * LEFT_ANCHOR_X * seg_x - 2 * LEFT_ANCHOR_Y * seg_y) - ZERO_LEFT;
         wall[RIGHT_AXIS] = sqrt(seg_r + RIGHT_NORM - 2 * RIGHT_ANCHOR_X * seg_x - 2 * RIGHT_ANCHOR_Y * seg_y) - ZERO_RIGHT;
-        wall[Z_AXIS] = seg_z;
-        //grbl_sendf(CLIENT_SERIAL, "Wall Axis: %d/%d (%4.2f %4.2f)\r\n", segment, segment_count, wall[LEFT_AXIS], wall[RIGHT_AXIS]);
+        wall[Z_AXIS] = target[Z_AXIS];
+        grbl_sendf(CLIENT_SERIAL, "Wall Axis: %d/%d (%4.2f %4.2f %4.2f)\r\n", segment, segment_count, wall[LEFT_AXIS], wall[RIGHT_AXIS], wall[Z_AXIS]);
 
         // begin determining new feed rate
         // calculate move distance for each axis
@@ -132,7 +145,7 @@ bool cartesian_to_motors(float* target, plan_line_data_t* pl_data, float* positi
         // end determining new feed rate
         // wall[LEFT_AXIS] += x_offset;
         // wall[RIGHT_AXIS] += y_offset;
-        wall[Z_AXIS] += z_offset;
+        //wall[Z_AXIS] += z_offset;
 
         // mc_line() returns false if a jog is cancelled.
         // In that case we stop sending segments to the planner.
