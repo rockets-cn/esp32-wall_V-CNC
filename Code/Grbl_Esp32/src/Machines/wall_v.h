@@ -30,7 +30,7 @@
 
 #define STEPPERS_DISABLE_PIN    GPIO_NUM_17
 
-// #define Z_SERVO_PIN             GPIO_NUM_16
+// #define Z_SERVO_PIN             GPIO_NUM_16 //D11
 
 //#define X_LIMIT_PIN             GPIO_NUM_36 //A0
 //#define Y_LIMIT_PIN             GPIO_NUM_39 //A1

@@ -49,3 +49,58 @@ http://maslowcommunitygarden.org/Fold-Flat-Chair.html
 感谢@maslow CNC项目https://www.maslowcnc.com/
 
 感谢@ESP_GRBL项目https://github.com/bdring/Grbl_Esp32
+
+
+
+# esp32-wall_V-CNC
+## Origin
+This project originated with maslowcnc, when we invited Mr. Sun Haoqin to reproduce this project together. The first phase of the project was all done by Mr. Sun.
+
+The mechanical structure of Z-axis part was designed and made by @999.
+
+But in the software debugging stage, a series of problems were encountered. The project was put on hold for some time.
+
+Later, we found that GRBL could run on esp32, so we were ready to migrate to esp32.
+
+Next the migration of coordinate system was done by @light with help.
+
+@SaharaBison provided great support during the testing phase.
+
+## Improvements
+
+* Main control changed to ESP32
+
+* Firmware used ESP_GRBL
+
+* Motor changed to stepper motor with gearbox
+## Features
+* Small system footprint
+* Cheap price
+* Open source
+
+## Testing process
+
+* July 2, 2021: Left and right axes can move, accuracy has some problems.
+
+* July 9, 2021: Left and right axis cable installation and commissioning, moving normally, accurate data.
+
+* July 16, 2021: Left and right axis chains installed and tested, moving normally. Need to calibrate the design of the function.
+
+* July 23, 2021: Z-axis installed and tested, Z-axis can be controlled, but the data seems to have problems.
+* July 30, 2021: Z-axis operates normally, and after debugging, Z-axis accuracy meets the requirement. The main problem is that the stepper motor driver grounding is not reliable. Modified the bug in the code that Z-axis must move with X and Y-axis
+
+## TODO list
+ 1. * [ ] Seeking X, Y axis precise positioning solution. Proposed to investigate tof and ultrasonic distance measurement.
+ 2. * [ ] Redesign the center disc.
+
+## Testing
+http://maslowcommunitygarden.org/Fold-Flat-Chair.html
+First test chair.
+
+## Thanks
+Thanks to @light (solasolo) https://github.com/solasolo and @saharabison @999 @sunhaoqin (sunhaoqin) https://github.com/sunhaoqin from Mushroom Cloud Makerspace
+
+Thanks to @maslow CNC project https://www.maslowcnc.com/
+
+Thanks to @ESP_GRBL project https://github.com/bdring/Grbl_Esp32
+ Translated with www.DeepL.com/Translator (free version)
